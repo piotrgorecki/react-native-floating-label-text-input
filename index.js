@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 import {
   StyleSheet,
   Text,
@@ -103,20 +103,22 @@ class FloatLabelTextField extends Component {
           <View style={[styles.paddingView, this.leftPadding()]} />
           <View style={[styles.fieldContainer, this.withBorder()]}>
             <FloatingLabel visible={this.state.text}>
-              <Text style={[styles.fieldLabel, this.labelStyle()]}>{this.placeholderValue()}</Text>
+              <Text style={this.floatingLabelStyle(this.props)}>
+                {this.placeholderValue()}
+              </Text>
             </FloatingLabel>
             <TextFieldHolder withValue={this.state.text}>
               <TextInput {...this.props}
                 ref='input'
-                underlineColorAndroid="transparent"
-                style={[styles.valueText]}
+                underlineColorAndroid='transparent'
+                style={this.textInputStyle(this.props)}
                 defaultValue={this.props.defaultValue}
                 value={this.state.text}
                 maxLength={this.props.maxLength}
                 onFocus={() => this.setFocus()}
                 onBlur={() => this.unsetFocus()}
                 onChangeText={(value) => this.setText(value)}
-                />
+              />
             </TextFieldHolder>
           </View>
         </View>
@@ -162,9 +164,19 @@ class FloatLabelTextField extends Component {
     } catch (_error) { }
   }
 
-  labelStyle() {
+  floatingLabelStyle({labelStyle, labelFocusStyle, labelColorStyle}) {
     if (this.state.focused) {
-      return styles.focused;
+      return [styles.fieldLabel, styles.focused, labelStyle, labelFocusStyle, labelColorStyle];
+    } else {
+      return [styles.fieldLabel, labelStyle, labelColorStyle];
+    }
+  }
+  
+  textInputStyle({textInputStyle, textInputFocusStyle}) {
+    if (this.state.focused) {
+      return [styles.valueText, textInputStyle, textInputFocusStyle];
+    } else {
+      return [styles.valueText, textInputStyle];
     }
   }
 
@@ -220,10 +232,11 @@ const styles = StyleSheet.create({
   valueText: {
     height: (Platform.OS == 'ios' ? 20 : 60),
     fontSize: 16,
-    color: '#111111'
+    color: '#111111',
+    paddingLeft: 0
   },
   focused: {
-    color: "#1482fe"
+    color: '#1482fe'
   }
 });
 
